@@ -26,7 +26,7 @@
     <div class="main">
         <div class="products">
             <div v-if="!isLoading" class="search-results">
-                Found {{ items.length }} results for search term {{ lastSearchText }}
+                Found {{ results.length }} results for search term {{ lastSearchText }}
             </div>
             <div v-else>
                 Loading....
@@ -43,6 +43,7 @@
                     <button class="add-to-cart btn" @click="addItem(idx)">Add to Cart</button>
                 </div>
             </div>
+            <div id="product-list-bottom"></div>
         </div>
         <div class="cart">
             <h2>Shopping Cart</h2>
@@ -70,6 +71,7 @@
 <!-- Scripts -->
 <script src="/reload/reload.js"></script>
 <script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/scrollmonitor/scrollMonitor.js"></script>
 <script type="text/javascript" src="public/script.js"></script>
 
 </body>

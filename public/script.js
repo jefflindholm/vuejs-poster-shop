@@ -6,12 +6,21 @@ new Vue({
     data: {
         total: 0,
         items: [],
+        results: [],
         cart: [],
         searchText: '',
         lastSearchText: '',
         isLoading: false,
+        scrollNum: 5,
+        scrollLoc: 0,
     },
     methods: {
+        appendItems() {
+            if (this.items.length < this.results.length) {
+                const append = this.results.slice(this.items.length, this.items.length + this.scrollNum)
+                this.items = this.items.concat(append);
+            }
+        },
         search() {
             this.items = [];
             this.isLoading = true;
@@ -19,12 +28,13 @@ new Vue({
             fetch(`/search/${this.searchText}`)
                 .then(res => res.json())
                 .then((res) => {
-                    this.items = res.map(r => ({
+                    this.results = res.map(r => ({
                         id: r.id,
                         title: r.title,
                         price: makePrice(),
                         link: r.link,
-                    }))
+                    }));
+                    this.items = this.results.slice(this.scrollLoc, this.scrollNum);
                     this.isLoading = false;
                     this.lastSearchText = this.searchText;
                 })
@@ -50,7 +60,7 @@ new Vue({
             this.total -= item.price;
             if (item.quantity < 1) {
                 this.cart.splice(this.cart.indexOf(item), 1)
-            }
+            }anime
         },
     },
     filters: {
@@ -62,5 +72,10 @@ new Vue({
     mounted() {
         this.searchText = 'anime';
         this.search();
+        const elem = document.getElementById('product-list-bottom');
+        const watcher = scrollMonitor.create(elem);
+        watcher.enterViewport(() => {
+            this.appendItems();
+        });
     }
 })
