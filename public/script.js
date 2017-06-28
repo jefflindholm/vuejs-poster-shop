@@ -12,7 +12,6 @@ new Vue({
         lastSearchText: '',
         isLoading: false,
         scrollNum: 5,
-        scrollLoc: 0,
     },
     methods: {
         appendItems() {
@@ -22,6 +21,9 @@ new Vue({
             }
         },
         search() {
+            if (!this.searchText.length) {
+                return;
+            }
             this.items = [];
             this.isLoading = true;
             if (!this.searchText) return;
@@ -34,7 +36,7 @@ new Vue({
                         price: makePrice(),
                         link: r.link,
                     }));
-                    this.items = this.results.slice(this.scrollLoc, this.scrollNum);
+                    this.items = this.results.slice(0, this.scrollNum);
                     this.isLoading = false;
                     this.lastSearchText = this.searchText;
                 })
@@ -61,6 +63,11 @@ new Vue({
             if (item.quantity < 1) {
                 this.cart.splice(this.cart.indexOf(item), 1)
             }anime
+        },
+    },
+    computed: {
+        noMoreItems() {
+            return this.items.length >= this.results.length && this.items.length > 0;
         },
     },
     filters: {
